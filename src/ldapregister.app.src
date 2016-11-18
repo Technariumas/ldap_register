@@ -1,0 +1,15 @@
+{application, ldapregister,
+ [
+  {description, ""},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  lager,
+                  cowboy,
+                  jiffy
+                 ]},
+  {mod, { ldapregister_app, []}},
+  {env, []}
+ ]}.
