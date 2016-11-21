@@ -1,0 +1,57 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+%%! -name adder@127.0.0.1 -hidden -setcookie ldapregister
+
+-record(ldap_member,{
+    ticket_id :: list(),
+    progress = undefined :: atom(),
+    name :: list(),
+    surname :: list(),
+    uid = "undefined":: list(),
+    password = "undefined" :: list(),
+    email :: list(),
+    mobile :: list() 
+    }).
+
+main([FileName]) ->
+    try
+    ok = connect_to_server(),
+    Members = parse_csv(FileName),
+    {ok,_} = add_members(Members),
+    ok = req_candidates_processing(),
+    halt(0)
+    catch 
+       Class:Reason -> io:format("Error ~p:~p~n",[Class,Reason])
+   end;
+
+main(_Else) ->
+    io:format("usage: add_members path_to_csv_file ~n"),
+     halt(1).
+
+connect_to_server() ->
+    case net_adm:ping('ldapregister@127.0.0.1') of
+        pong -> ok;
+        Else -> io:format("Can not connect to server !~n"),
+                halt(2)
+    end.
+
+parse_csv(File) ->
+  {ok, Data1} = file:read_file(File),
+   Lines = re:split(Data1, "\r|\n|\r\n", [] ),
+    SplitLines = [re:split(Line,",",[]) || Line <- Lines],
+    [parse_to_member(SplitLine) || SplitLine <- SplitLines,SplitLine =/= [<<"">>]].
+
+parse_to_member([Name,Surname,Mobile,Email|_Rest] ) ->
+    #ldap_member{ 
+     name=unicode:characters_to_list(Name,utf8),
+     surname=unicode:characters_to_list(Surname),
+     mobile=unicode:characters_to_list(Mobile),
+     email=unicode:characters_to_list(Email)
+    }.
+
+add_members(Members) ->
+    rpc:call('ldapregister@127.0.0.1',ldapregister_members,add_members,[Members]).
+
+req_candidates_processing()->
+    rpc:call('ldapregister@127.0.0.1',ldapregister_members,process_candidates,[]).
+

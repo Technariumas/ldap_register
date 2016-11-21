@@ -8,8 +8,15 @@
                   stdlib,
                   lager,
                   cowboy,
-                  jiffy
+                  jiffy,
+                  crypto,
+                  mnesia
                  ]},
   {mod, { ldapregister_app, []}},
-  {env, []}
+  {start_phases , [
+    {create_schema, []},
+    {app_start, []}]},
+  {env, [
+    {shasalt,"sdfwrwqtrwqe"}
+    ]}
  ]}.
