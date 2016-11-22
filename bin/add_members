@@ -31,7 +31,7 @@ main(_Else) ->
 connect_to_server() ->
     case net_adm:ping('ldapregister@127.0.0.1') of
         pong -> ok;
-        Else -> io:format("Can not connect to server !~n"),
+        _Else -> io:format("Can not connect to server !~n"),
                 halt(2)
     end.
 
