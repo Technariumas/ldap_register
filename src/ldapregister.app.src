@@ -10,7 +10,8 @@
                   cowboy,
                   jiffy,
                   crypto,
-                  mnesia
+                  mnesia,
+                  ssl
                  ]},
   {mod, { ldapregister_app, []}},
   {start_phases , [
