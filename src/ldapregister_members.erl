@@ -36,10 +36,39 @@ init([]) ->
 handle_call({add_members,ListOfMembers}, _From, State) ->
     {reply, add_candidates(ListOfMembers), State};
 
+handle_call(process_candidates, _From,State) ->
+    gen_server:cast(self(), process_candidate),
+    {reply,ok,State};
+
 handle_call(_Request, _From, State) ->
     Reply = ok,
     {reply, Reply, State}.
 
+
+handle_cast(process_candidate, State) ->
+    SelectFun = fun() ->
+        mnesia:select(ldap_member,[{ #ldap_member{progress='$1',_='_'},[{'==','$1', added}],['$_']}])
+    end,
+    UpdateStatusFun = fun(M) ->
+        mnesia:write(M#ldap_member{progress=online})
+    end,
+    case mnesia:transaction(SelectFun,10) of
+        {atomic,[Member|_Rest]} ->
+            gen_server:cast(self(),process_candidate),
+            case ldapregister_email:send_link(Member) of
+                {ok,_} ->
+                   {atomic, ok} =  mnesia:transaction(UpdateStatusFun,[Member],10),
+                    {noreply,State};
+                Result  -> 
+                    {stop,{send_link_failed,Result},State}
+            end;
+        {atomic,[]} ->
+            {noreply,State};
+        Result1 ->
+               %Rise alarm ?
+         {stop,{unexpected_result,Result1},State}
+    end;
+    
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
