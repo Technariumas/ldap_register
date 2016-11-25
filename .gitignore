@@ -1,5 +1,6 @@
 .eunit
 deps
+deb
 *.o
 *.beam
 *.plt
@@ -11,3 +12,4 @@ rel/ldapregister
 .rebar
 ttb_last_config
 log
+*.deb
