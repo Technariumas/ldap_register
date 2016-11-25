@@ -24,6 +24,7 @@ EOF
 sudo chown -R root:root deb/root
 fpm -s dir -t deb \
   -n "ldapregister" \
+  --config-files /opt/ldapregister/ldapregister.config \
   -a all \
   -v 0.0.1 \
   -m "Ricardas Pocius <cirka@cirka.lt>" \
