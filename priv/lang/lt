@@ -1,6 +1,6 @@
 [
     {"l_title","Registruokitės į Technarium VAS"},
-    {"l_why","Technariume paleidinėjame vieningą elektroninių paslaugų autorizacijos būdą todėl prašome Jūsų: <UL><UI>leisti saugoti ir tvarkyti Jūsų asmens duomenis automatinėmis priemonėmis;</UL><UL>susikurti vartotojo vardą ir slaptažodį bei perduoti juos mums.</UL></UL>"},
+    {"l_why","Technariume paleidinėjame vieningą elektroninių paslaugų autorizacijos būdą todėl prašome Jūsų: <ol><li>leisti saugoti ir tvarkyti Jūsų asmens duomenis automatinėmis priemonėmis;</li><li>susikurti vartotojo vardą ir slaptažodį bei perduoti juos mums.</li></ol>"},
     {"l_username_policy","Vartotojo vardas gali būti sudarytas tik iš lotiniškų raidžių ir arabiškų skaitmenų."},
     {"l_password_policy","Slaptažodis gali būti sudarytas tik iš spausdinamų ASCII lentelės raidžių, skaitmenų ir simbolių !!!"},
     {"l_facts_we_know_about_you","Mums jau žinoma informacija apie Jus, kurią Jūs pateikėtė Technarium narystės sutartyje"},
