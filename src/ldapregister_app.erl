@@ -42,7 +42,44 @@ start_phase(create_schema, _StarType,[]) ->
 
 start_phase(app_start,_StartType,[]) ->
     supervisor:start_child(ldapregister_sup,?CHILD(ldapregister_members,worker)),
-    ok.
+
+    Dispatch = cowboy_router:compile(
+        [%host list
+         {'_',
+          [ %path list
+           {"/register/:lang/:ticket_id", ldapregister_webform, []}
+          ]}
+        ]),
+
+    {ok,_Pid} = cowboy:start_https(
+        https, % ranch supervisor child id
+        10, % How many listeners
+        [
+         {port,application:get_env(ldapregister,tls_port,8081)},
+         {cacertfile,application:get_env(ldapregister,tls_cacertfile,"cacert.crt")},
+         {certfile,application:get_env(ldapregister,tls_certfile,"cert.crt")},
+         {keyfile,application:get_env(ldapregister,tls_keyfile,"keyfile.key")},
+         {versions,['tlsv1.2', 'tlsv1.1', 'tlsv1']},
+         {ciphers, ["ECDHE-ECDSA-AES256-GCM-SHA384","ECDHE-RSA-AES256-GCM-SHA384",
+            "ECDHE-ECDSA-AES256-SHA384","ECDHE-RSA-AES256-SHA384", "ECDHE-ECDSA-DES-CBC3-SHA",
+            "ECDH-ECDSA-AES256-GCM-SHA384","ECDH-RSA-AES256-GCM-SHA384","ECDH-ECDSA-AES256-SHA384",
+            "ECDH-RSA-AES256-SHA384","DHE-DSS-AES256-GCM-SHA384","DHE-DSS-AES256-SHA256",
+            "AES256-GCM-SHA384","AES256-SHA256","ECDHE-ECDSA-AES128-GCM-SHA256",
+            "ECDHE-RSA-AES128-GCM-SHA256","ECDHE-ECDSA-AES128-SHA256","ECDHE-RSA-AES128-SHA256",
+            "ECDH-ECDSA-AES128-GCM-SHA256","ECDH-RSA-AES128-GCM-SHA256","ECDH-ECDSA-AES128-SHA256",
+            "ECDH-RSA-AES128-SHA256","DHE-DSS-AES128-GCM-SHA256","DHE-DSS-AES128-SHA256",
+            "AES128-GCM-SHA256","AES128-SHA256","ECDHE-ECDSA-AES256-SHA",
+            "ECDHE-RSA-AES256-SHA","DHE-DSS-AES256-SHA","ECDH-ECDSA-AES256-SHA",
+            "ECDH-RSA-AES256-SHA","AES256-SHA","ECDHE-ECDSA-AES128-SHA",
+            "ECDHE-RSA-AES128-SHA","DHE-DSS-AES128-SHA","ECDH-ECDSA-AES128-SHA",
+            "ECDH-RSA-AES128-SHA","AES128-SHA"]},
+        {secure_renegotiate, true},
+        {reuse_sessions, true},
+        {honor_cipher_order, true},
+        {max_connections, infinity}
+        ],
+        [{max_keepalive, 1024}, {env, [{dispatch, Dispatch}]}]),
+     ok.
 
 create_tables(Nodes) ->
     {atomic,ok} = mnesia:create_table(

@@ -48,8 +48,8 @@ Technarium teikiamomis elektroninėmis paslaugomis bus galima naudotis
 prisijungiant tik jum skirtu vartotojo vardu ir slaptažodžiu. Vartotojo
 vardą ir slaptažodį galite susigalvoti patys, tačiau vartotojo vardas
 turi būti unikalus ir jo pasikeisti nebus galima.
-Prašau užsiregistruokite sekdami nuorodą:
-https://ldap.technarium.lt:8080/register/lt/" ++ TID ++ "
+Prašau užsiregistruokite sekdami nuorodą:" ++
+?BASEURL ++ ?BASEPATH ++ "lt/"  ++ TID ++ "
 Nuoroda bus deaktyvuota po sėkmingos registracijos.
 
 
@@ -61,8 +61,8 @@ login to all of our services using your dedicated username and password. You
 can choose your username and password. Your username should be unique and you
 will not be able to change it later. 
 
-Please register by folowing this link:
-https://ldap.technarium.lt:8080/register/en/" ++ TID ++
+Please register by folowing this link:" ++ 
+?BASEURL ++ ?BASEPATH ++ "en/"  ++ TID ++ 
 "
 This link will be de-actived after succesful registration.
 

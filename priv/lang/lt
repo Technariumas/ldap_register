@@ -1,0 +1,27 @@
+[
+    {"l_title","Registruokitės į Technarium VAS"},
+    {"l_why","Technariume paleidinėjame vieningą elektroninių paslaugų autorizacijos būdą todėl prašome Jūsų: <UL><UI>leisti saugoti ir tvarkyti Jūsų asmens duomenis automatinėmis priemonėmis;</UL><UL>susikurti vartotojo vardą ir slaptažodį bei perduoti juos mums.</UL></UL>"},
+    {"l_username_policy","Vartotojo vardas gali būti sudarytas tik iš lotiniškų raidžių ir arabiškų skaitmenų."},
+    {"l_password_policy","Slaptažodis gali būti sudarytas tik iš spausdinamų ASCII lentelės raidžių, skaitmenų ir simbolių !!!"},
+    {"l_facts_we_know_about_you","Mums jau žinoma informacija apie Jus, kurią Jūs pateikėtė Technarium narystės sutartyje"},
+    {"l_name","Vardas"},
+    {"l_surname","Pavardė"},
+    {"l_mobile_nr","Telefono numeris"},
+    {"l_email","e-paštas"},
+    {"l_please_fill_in","Trūkstama informacija. Prašome užpildyti šiuos laukus ir pažymėti varnelę"},
+    {"l_username","Pageidaujamas vartotojo vardas"},
+    {"l_password1","Pasirinktas slaptažodis"},
+    {"l_password2","Pakartokite pasirinktą slaptažodį"},
+    {"l_confirm_legend","Jūsų sutikimas. Prašau pažymėkite varnelę"},
+    {"l_confirm_label","Aš patikrinau, kad aukščiau parodyta asmens informacija yra teisinga ir sutinku, kad mano asmens duomenys būtų saugomi ir tvarkomi VŠĮ \"Šviesos Kūgiai\" automatinėmis priemonėmis."},
+    {"l_contact_if_wrong_data","Jei Jums pateikta informacija apie Jus yra neteisinga, prašome neperdavinėkite duomenų ir susisiekite su mumis."},
+    {"l_submit","Perduoti duomenis"},
+    {"l_error_username_too_short","Vartotojo vardas per trumpas"},
+    {"l_error_username_bad_chars","Naudojami neleistini simboliai"},
+    {"l_error_username_not_unique","Vartotojo vardas jau naudojamas"},
+    {"l_error_password_too_short","Slaptažodis per trumpas"},
+    {"l_error_password_bad_chars","Naudojami neleistini simboliai"},
+    {"l_error_password_not_equal","Slaptažodžiai nesutampa"},
+    {"l_error_confirm_not_checked","Nepažymėta varnelė"}
+].
+

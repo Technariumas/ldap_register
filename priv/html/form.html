@@ -1,0 +1,48 @@
+<html>
+ <head>
+  <title>$l_title$</title>
+ </head>
+ <body>
+  <div class="why">$l_why$</div>
+ <div class="facts">$l_facts_we_know_about_you$:<br />
+   <ul>
+    <li>$l_name$: $m_name$</li>
+    <li>$l_surname$: $m_surname$</li>
+    <li>$l_mobile_nr$: $m_mobile_nr$</li>
+    <li>$l_email$: $m_email$ </li>
+   </ul>
+  </div>
+  <div class="form">
+   <form method="post">
+    <fieldset style="display:block; width:800px;"> <legend>$l_please_fill_in$</legend>
+      <div class="policy">$l_username_policy$</div>
+      <div class="policy">$l_password_policy$</div>
+      <br />
+     $l_username$:<br />
+     <input type="text" name="v_username" value="$v_username$"/>
+     <div style="display:$error_username_too_short$; color:#ff0000;">$l_error_username_too_short$</div>
+     <div style="display:$error_username_bad_chars$ ;color:#ff0000;">$l_error_username_bad_chars$</div>
+     <div style="display:$error_username_not_uniq$; color:#ff0000;">$l_error_username_not_unique$</div>
+     <br />
+     $l_password1$:<br />
+     <input type="password" name="v_password1" value="$v_password1$"/>
+     <div style="display:$error_password_too_short$; color:#ff0000;">$l_error_password_too_short$</div>
+     <div style="display:$error_password_bad_chars$ ;color:#ff0000;">$l_error_password_bad_chars$</div>
+     <div style="display:$error_password_not_equal$ ;color:#ff0000;">$l_error_password_not_equal$</div>
+
+     <br />
+     $l_password2$:<br />
+     <input type="password" name="v_password2" value="$v_password2$"/>
+     <div style="display:$error_password_not_equal$; color:#ff0000;">$l_error_password_not_equal$</div>
+    </fieldset>
+    <fieldset style="display:block; width:800px"> <legend>$l_confirm_legend$</legend>
+     <input type="checkbox" name="v_confirm" value="checked" $v_confirm$ />
+     <div style="display:$error_confirm_not_checked$; color:#ff0000;">$l_error_confirm_not_checked$</div>
+      $l_confirm_label$<br />
+    </fieldset>
+     <div class="contact">$l_contact_if_wrong_data$</div>
+     <input type="submit" value="$l_submit$" />
+   </form>
+  </div>
+ </body>
+</html>
