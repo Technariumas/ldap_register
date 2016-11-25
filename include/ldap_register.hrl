@@ -7,5 +7,9 @@
     uid = "undefined":: list(),
     password = "undefined" :: list(),
     email :: list(),
-    mobile :: list() 
+    mobile :: list(),
+    synced = false :: atom()
     }).
+
+-define(BASEURL,"https://ldap.technarium.lt").
+-define(BASEPATH,"/register/").
