@@ -7,6 +7,10 @@
   <title>$l_title$</title>
  </head>
  <body>
+	 <div id="logo">
+	 <a href="http://technarium.lt" title="Home"><img src="img/logo_small.png" alt="Technarium" /></a>
+	</div>
+	  <div id="content"> 
   <div class="why">$l_why$</div>
  <div class="facts">$l_facts_we_know_about_you$:<br />
    <ul>
@@ -21,21 +25,19 @@
     <fieldset style="display:block; width:800px;"> <legend>$l_please_fill_in$</legend>
       <div class="policy">$l_username_policy$</div>
       <div class="policy">$l_password_policy$</div>
-      <br />
-     $l_username$:<br />
+     <p>$l_username$:</p>
      <input type="text" name="v_username" value="$v_username$"/>
      <div style="display:$error_username_too_short$; color:#ff0000;">$l_error_username_too_short$</div>
      <div style="display:$error_username_bad_chars$ ;color:#ff0000;">$l_error_username_bad_chars$</div>
      <div style="display:$error_username_not_uniq$; color:#ff0000;">$l_error_username_not_unique$</div>
-     <br />
-     $l_password1$:<br />
+    
+     <p>$l_password1$:</p>
      <input type="password" name="v_password1" value="$v_password1$"/>
      <div style="display:$error_password_too_short$; color:#ff0000;">$l_error_password_too_short$</div>
      <div style="display:$error_password_bad_chars$ ;color:#ff0000;">$l_error_password_bad_chars$</div>
      <div style="display:$error_password_not_equal$ ;color:#ff0000;">$l_error_password_not_equal$</div>
 
-     <br />
-     $l_password2$:<br />
+     <p>$l_password2$:</p>
      <input type="password" name="v_password2" value="$v_password2$"/>
      <div style="display:$error_password_not_equal$; color:#ff0000;">$l_error_password_not_equal$</div>
     </fieldset>
@@ -47,6 +49,8 @@
      <div class="contact">$l_contact_if_wrong_data$</div>
      <input type="submit" value="$l_submit$" />
    </form>
+   </div>
+   <div id="footer"><p><img src="img/entropy.png" alt="Entropy web services" />Entropy web services 2016</p></div>
   </div>
  </body>
 </html>
