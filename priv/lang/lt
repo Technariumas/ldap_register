@@ -13,7 +13,7 @@
     {"l_password1","Pasirinktas slaptažodis"},
     {"l_password2","Pakartokite pasirinktą slaptažodį"},
     {"l_confirm_legend","Jūsų sutikimas. Prašau pažymėkite varnelę"},
-    {"l_confirm_label","Aš patikrinau, kad aukščiau parodyta asmens informacija yra teisinga ir sutinku, kad mano asmens duomenys būtų saugomi ir tvarkomi VŠĮ \"Šviesos Kūgiai\" automatinėmis priemonėmis."},
+    {"l_confirm_label","Aš patikrinau, kad aukščiau parodyta asmens informacija yra teisinga ir sutinku, kad mano asmens duomenys būtų saugomi ir tvarkomi VŠĮ \"Šviesos kūgiai\" automatinėmis priemonėmis."},
     {"l_contact_if_wrong_data","Jei Jums pateikta informacija apie Jus yra neteisinga, prašome neperdavinėkite duomenų ir susisiekite su mumis."},
     {"l_submit","Perduoti duomenis"},
     {"l_error_username_too_short","Vartotojo vardas per trumpas"},

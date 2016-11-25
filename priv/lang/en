@@ -13,7 +13,7 @@
     {"l_password1","Chosen password"},
     {"l_password2","Repeat chosen password"},
     {"l_confirm_legend","Your agreement. Check the checkbox, please"},
-    {"l_confirm_label","I have verified that the identity information displayed above is correct, and I agree with NGO \"Šviesos Kūgiai\" storing and processing my identity data by automatic means."},
+    {"l_confirm_label","I have verified that the identity information displayed above is correct, and I agree with NGO \"Šviesos kūgiai\" storing and processing my identity data by automatic means."},
     {"l_contact_if_wrong_data","If the information presented to You is incorrect, then do not submit it, and contact us."},
     {"l_submit","Submit data"},
     {"l_error_username_too_short","Username too short"},
