@@ -17,6 +17,5 @@
     {create_schema, []},
     {app_start, []}]},
   {env, [
-    {shasalt,"sdfwrwqtrwqe"}
     ]}
  ]}.

@@ -155,7 +155,7 @@ add_candidate(Member) ->
     end.
 
 create_ticket(#ldap_member{name=Name,surname=Surname,email=Email,mobile=Mobile}) ->
-   {ok, Salt} = application:get_env(shasalt),
+   Salt = ldapregister_secrets:make_salt(),
    Hash = crypto:hash(sha256,unicode:characters_to_binary(Salt ++ Name ++ Surname ++ Email ++ Mobile)),
    lists:flatten([io_lib:format("~2.16.2b",[Val]) || Val <- binary_to_list(Hash)]).
 
