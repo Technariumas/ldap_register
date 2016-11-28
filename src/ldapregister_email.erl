@@ -4,7 +4,7 @@
 
 %Added ldapregister ENV mailFrom, relay,relay_user,relay_pass
 
-send_link(#ldap_member{name=Name,surname=Surname,email=Email,ticket_id=TID}) ->
+send_link(#ldap_member{name=Name,surname=Surname,email=Email}=Member) ->
     {ok,MailFrom}  = application:get_env(mailFrom),
     {ok,Relay}     = application:get_env(relay),
     {ok,RelayUser} = application:get_env(relay_user),
@@ -13,11 +13,19 @@ send_link(#ldap_member{name=Name,surname=Surname,email=Email,ticket_id=TID}) ->
         unicode:characters_to_binary(MailFrom),
         unicode:characters_to_binary(Name ++" " ++ Surname ++ "<"++Email++">"),
         "Kviečiu užsiregistruoti vieningoje Technarium autentikavimoso sistemoje / Please register on unified Technarium authentication system",
-        generate_body(TID),
+        generate_invitation_body(Member),
         []),
     gen_smtp_client:send(
         {From,To,Mime},
         [{relay,Relay},{username,RelayUser},{password,RelayPass},{port,25},{tls,always}]).
+
+generate_invitation_body(Member) ->
+    URL_en = ldapregister_template:generate_user_registration_url(en,Member),
+    URL_lt = ldapregister_template:generate_user_registration_url(lt,Member),
+    Data = [{"user_registration_url_lt",URL_lt},{"user_registration_url_en",URL_en}],
+    {ok,Text} = ldapregister_template:render_file("please_register_mail",Data),
+    unicode:characters_to_binary(Text).
+
 
 mail_plain(From, To, Subject, Body, Opts) ->
     AddHeaders = proplists:get_value(headers, Opts, []),
@@ -37,39 +45,5 @@ mail_plain(From, To, Subject, Body, Opts) ->
 extract_addr_rfc822(Rfc822) ->
     {ok, [{_, Addr}]} = smtp_util:parse_rfc822_addresses(Rfc822),
     list_to_binary(Addr).
-
-generate_body(TID) ->
-Text =
-"Sveiki,
-
-šiuo metu Technariume diegiame vieningą autentikavimąsi prie Technariumo
-teikiamų elektroninių paslaugų (Wiki, cloud ir t.t.). Jau greitai visomis
-Technarium teikiamomis elektroninėmis paslaugomis bus galima naudotis
-prisijungiant tik jum skirtu vartotojo vardu ir slaptažodžiu. Vartotojo
-vardą ir slaptažodį galite susigalvoti patys, tačiau vartotojo vardas
-turi būti unikalus ir jo pasikeisti nebus galima.
-Prašau užsiregistruokite sekdami nuorodą:" ++
-?BASEURL ++ ?BASEPATH ++ "lt/"  ++ TID ++ "
-Nuoroda bus deaktyvuota po sėkmingos registracijos.
-
-
-Hi,
-
-we are deploying a unified autenthication method to all electronic services
-(Wiki, cloud, etc.) provided by Technarium hackerspace. Soon you will be able to
-login to all of our services using your dedicated username and password. You
-can choose your username and password. Your username should be unique and you
-will not be able to change it later. 
-
-Please register by folowing this link:" ++ 
-?BASEURL ++ ?BASEPATH ++ "en/"  ++ TID ++ 
-"
-This link will be de-actived after succesful registration.
-
-Pagarbiai / Best Regards
-Ričardas Pocius
-(su Technarium IT admino kepure  / with IT admin hat)",
-unicode:characters_to_binary(Text).
-
 
 

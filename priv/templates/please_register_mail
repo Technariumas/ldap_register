@@ -1,0 +1,28 @@
+Sveiki,
+
+šiuo metu Technariume diegiame vieningą autentikavimąsi prie Technariumo
+teikiamų elektroninių paslaugų (Wiki, cloud ir t.t.). Jau greitai visomis
+Technarium teikiamomis elektroninėmis paslaugomis bus galima naudotis
+prisijungiant vienu vartotojo vardu + slaptažodžiu. Vartotojo
+vardą ir slaptažodį galite susigalvoti patys, tačiau vartotojo vardas
+turi būti unikalus ir jo pasikeisti nebus galima.
+Prašau užsiregistruokite sekdami nuorodą:
+$user_registration_url_lt$
+Nuoroda bus deaktyvuota po sėkmingos registracijos.
+
+
+Hi,
+
+we are deploying a unified autenthication method to all electronic services
+(Wiki, cloud, etc.) provided by Technarium hackerspace. Soon you will be able to
+login to all of our services using your dedicated username and password. You
+can choose your username and password. Your username should be unique and you
+will not be able to change it later. 
+
+Please register by folowing this link:
+$user_registration_url_en$
+This link will be de-actived after succesful registration.
+
+Pagarbiai / Best Regards
+Technarium IT Team
+

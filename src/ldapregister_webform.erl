@@ -83,8 +83,7 @@ generate_form(Lang,#ldap_member{name=MName,surname=MSurname,mobile=MMobile,email
     Fields = lists:map( fun(Param) -> {atom_to_list(Param),maps:get(Param,EnteredFields,"")} end, AllFields),
     LocalisedText = ldapregister_lang:get_strings(Lang),
     Model = Fields ++ Errors ++ MemberDetails ++ LocalisedText,
-    {ok,Template }  = file:read_file(code:priv_dir(ldapregister)++"/html/form.html"),
-    {ok,Rendered} = render(Template,Model),
+    {ok,Rendered} = ldapregister_template:render_file("registration_form_html",Model),
     {200,[?HTML],uni(Rendered)}.
 
 validate_and_respond(Lang,Member,Req) ->
@@ -119,7 +118,7 @@ validate_and_respond(Lang,Member,Req) ->
             #{v_username:=Username,v_password1:=Password} = ValidFields,
                 case ldapregister_members:set_userpass(Member#ldap_member.ticket_id,Username,Password) of
                     not_unique -> generate_form(Lang,Member,ValidFields,[error_username_not_unique]);
-                    ok ->  {303,[{<<"location">>,uni(member_link(Lang,Member))}],uni("")}
+                    ok ->  {303,[{<<"location">>,uni(ldapregister_template:generate_user_registration_url(Lang,Member))}],uni("")}
                 end;
         {fail,ValidFields,Errors} ->
             lager:debug("Validation FAILED with Fields:~tp, Errors:~tp",[ValidFields,Errors]),
@@ -187,45 +186,4 @@ is_valid_password_chars([],true) -> true;
 is_valid_password_chars([P|Ass],true) when P >= 32 andalso P < 127 ->
     is_valid_password_chars(Ass,true);
 is_valid_password_chars(_,_) -> false.
-
-member_link(Lang,#ldap_member{ticket_id=Ticket_id}) ->
-    L = case Lang of
-        lt -> "lt/";
-        en -> "en/"
-    end,
-    ?BASEURL ++ ?BASEPATH ++ L ++ Ticket_id.
-
-render(View,Model) when is_binary(View) ->
-    ListView=unicode:characters_to_list(View,utf8),
-    render(ListView,Model);
-
-render(View,Model) ->
-    Replacer = fun
-%       (Char,{State,Acumulator,Processed}) 
-        ($$,{copy,Acumulator,Processed}) ->
-            {replace,Acumulator,Processed};
-        ($$,{replace,Acumulator,Processed}) ->
-            Replacement = proplists:get_value(lists:reverse(Acumulator),Model,"MISSSING VAR:"++lists:reverse(Acumulator)),
-            {copy,[],prepend(Replacement,Processed)};
-        (Char,{replace,Acumulator,Processed}) ->
-            {replace,[Char|Acumulator],Processed};
-        (Char,{copy,Acumulator,Processed}) when length(Acumulator)==0->
-            {copy,Acumulator,[Char|Processed]}
-    end,
-    case lists:foldl(Replacer,{copy,[],[]},View) of
-        {copy,[],ReversedResult} -> {ok,lists:reverse(ReversedResult)};
-        {replace,Val,_} -> {error,{missing_end_of_val,lists:reverse(Val)}};
-        Else -> {error,{unspecified_returnval,Else}}
-    end.
-
-prepend([],Processed) -> Processed;
-prepend([H|T],Processed) -> prepend(T,[H|Processed]).
-
-
-
-  
-
-    
-
-
 
