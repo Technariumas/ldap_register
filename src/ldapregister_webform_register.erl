@@ -1,4 +1,4 @@
--module(ldapregister_webform).
+-module(ldapregister_webform_register).
 
 -export([init/3,handle/2,terminate/3]).
 -include("ldap_register.hrl").

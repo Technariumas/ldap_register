@@ -9,10 +9,7 @@
          process_candidates/0,
          get_member/1,
          set_userpass/3,
-         user_exists/1,
-         ssha/1,
-         ssha/2,
-         validatessha/2]).
+         user_exists/1]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -75,7 +72,7 @@ handle_call({set_userpass,Ticket_id,Username,Password}, _From,State) ->
         case mnesia:select(ldap_member,[{ #ldap_member{uid='$1',_='_'},[{'==','$1', Username}],['$1']}]) of
             [] -> 
                 [M] = mnesia:read(ldap_member,Ticket_id),
-                ok = mnesia:write(M#ldap_member{uid=Username,password=ssha(Password),progress=activated});
+                ok = mnesia:write(M#ldap_member{uid=Username,password=ldapregister_secrets:generate_ssha(Password),progress=activated});
             [_Else] ->not_unique
         end
     end,
@@ -168,24 +165,6 @@ member_exists(#ldap_member{name=Name,surname=Surname}) ->
         [] -> false;
         [Hash] -> {true,Hash}
     end.
-
-ssha(Pass) ->
-    Salt = printable_sha(crypto:hash(sha,term_to_binary(erlang:make_ref()))),
-    ssha(Pass,Salt).
-
-ssha(Pass,Salt) ->
-    EncodedHash = binary_to_list(crypto:hash(sha,Pass++Salt)),
-    "{SSHA}" ++ binary_to_list(base64:encode(EncodedHash++Salt)).
-
-printable_sha(SHA) ->
-    lists:flatten([ io_lib:format("~2.16.2b",[Byte]) || Byte <- binary_to_list(SHA)]).
-
-
-validatessha(ClearPassword, SshaHash) ->
-    D64 = base64:decode(lists:nthtail(6, SshaHash)),
-    {HashedData, Salt} = lists:split(20, binary_to_list(D64)),
-    NewHash = crypto:hash(sha,list_to_binary(ClearPassword ++ Salt)),
-    string:equal(binary_to_list(NewHash), HashedData).
 
 
 
