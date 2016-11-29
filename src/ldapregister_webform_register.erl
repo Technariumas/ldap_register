@@ -1,6 +1,6 @@
 -module(ldapregister_webform_register).
 
--export([init/3,handle/2,terminate/3]).
+-export([init/3,handle/2,terminate/3,username_is_blacklisted/1]).
 -include("ldap_register.hrl").
 
 -record(state,{
@@ -162,7 +162,8 @@ is_username_too_short(_G,_) -> false.
 
 is_username_not_unique(_G,#{v_username:=Username}) ->
     ldapregister_members:user_exists(Username) 
-    or ldapregister_ldap:user_exists(Username).
+    or ldapregister_ldap:user_exists(Username)
+    or username_is_blacklisted(Username).
 
 is_password_bad_chars(_G,#{v_password1:=Pass}) ->
     not is_valid_password_chars(Pass).
@@ -189,4 +190,9 @@ is_valid_password_chars([],true) -> true;
 is_valid_password_chars([P|Ass],true) when P >= 32 andalso P < 127 ->
     is_valid_password_chars(Ass,true);
 is_valid_password_chars(_,_) -> false.
+
+username_is_blacklisted(Username) ->
+    {ok,[Blacklist]} = file:consult(code:priv_dir(ldapregister)++"/blacklisted_passwords"),
+    lists:member(Username,Blacklist).
+
 
