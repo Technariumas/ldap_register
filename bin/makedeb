@@ -1,7 +1,7 @@
 #!/bin/bash
-sudo rm ldapregister_*.deb
-sudo rm -rf deb
-sudo rm -rf rel/ldapregister
+rm ldapregister_*.deb
+rm -rf deb
+rm -rf rel/ldapregister
 set -e
 rebar get-deps compile generate
 mkdir -p deb/root/opt/ldapregister/ssl
@@ -21,16 +21,17 @@ cat << EOF > deb/root/opt/ldapregister/ldapregister.config
      ]
 }]
 EOF
-sudo chown -R root:root deb/root
 fpm -s dir -t deb \
   -n "ldapregister" \
+  --deb-user root \
+  --deb-group root \
   --config-files /opt/ldapregister/ldapregister.config \
   -a all \
   -v 0.0.1 \
   -m "Ricardas Pocius <cirka@cirka.lt>" \
   --description "Website for registration to Technarium LDAP" \
   -C ./deb/root opt
-sudo rm -rf deb
+rm -rf deb
 
 
 
