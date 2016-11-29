@@ -6,10 +6,12 @@
 -export([start_link/0,
          add_members/1,
          add_member/4,
-         process_candidates/0,
          get_member/1,
          set_userpass/3,
-         user_exists/1]).
+         user_exists/1,
+         process_candidates/0,
+         sync_with_ldap/0
+]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -32,12 +34,14 @@ add_members(ListOfMembers) ->
 process_candidates() ->
     gen_server:call(?MODULE,process_candidates).
 
+sync_with_ldap() ->
+    gen_server:call(?MODULE,sync_with_ldap).
+
 get_member(Ticket_id) ->
     gen_server:call(?MODULE,{get_member,Ticket_id}).
 
 user_exists(Username) ->
     gen_server:call(?MODULE,{check_user_exists,Username}).
-
 
 set_userpass(Ticket_id,Username,Password) ->
     gen_server:call(?MODULE,{set_userpass,Ticket_id,Username,Password}).
@@ -57,6 +61,9 @@ handle_call(process_candidates, _From,State) ->
     gen_server:cast(self(), process_candidate),
     {reply,ok,State};
 
+handle_call(sync_with_ldap, _From,State) ->
+    gen_server:cast(self(), sync_with_ldap),
+    {reply,ok,State};
 
 handle_call({get_member,Ticket_id}, _From,State) ->
     LookupFun = fun(Id) ->
@@ -109,10 +116,34 @@ handle_cast(process_candidate, State) ->
             gen_server:cast(self(),process_candidate),
             case ldapregister_email:send_link(Member) of
                 {ok,_} ->
-                   {atomic, ok} =  mnesia:transaction(UpdateStatusFun,[Member],10),
+                    {atomic, ok} =  mnesia:transaction(UpdateStatusFun,[Member],10),
                     {noreply,State};
                 Result  -> 
                     {stop,{send_link_failed,Result},State}
+            end;
+        {atomic,[]} ->
+            {noreply,State};
+        Result1 ->
+               %Rise alarm ?
+         {stop,{unexpected_result,Result1},State}
+    end;
+
+handle_cast(sync_with_ldap, State) ->
+    SelectFun = fun() ->
+        mnesia:select(ldap_member,[{#ldap_member{progress='$1',synced='$2',_='_'},[{'==','$1',activated},{'==','$2',false}],['$_']}])
+    end,
+    UpdateStatusFun = fun(M) ->
+        mnesia:write(M#ldap_member{synced=true})
+    end,
+    case mnesia:transaction(SelectFun,10) of
+        {atomic,[Member|_Rest]} ->
+            gen_server:cast(self(),sync_with_ldap),
+            case ldapregister_ldap:push_member(Member) of
+                ok ->
+                    {atomic, ok} =  mnesia:transaction(UpdateStatusFun,[Member],10),
+                    {noreply,State};
+                {error,Reason}  -> 
+                    {stop,{ldap_push_failed,Reason},State}
             end;
         {atomic,[]} ->
             {noreply,State};
