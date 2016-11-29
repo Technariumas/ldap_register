@@ -67,7 +67,7 @@ generate_form(Lang,Member) ->
 generate_form(Lang,#ldap_member{name=MName,surname=MSurname,mobile=MMobile,email=MEmail},EnteredFields,ValidationErrors) ->
     MemberDetails = [{"m_name",MName},{"m_surname",MSurname},{"m_mobile_nr",MMobile},{"m_email",MEmail}],
     AllFields = [v_username, v_password1,v_password2,v_confirm],
-    AllErrors = [error_username_too_short, error_username_bad_chars,error_username_not_uniq,
+    AllErrors = [error_username_too_short,error_username_bad_chars,error_username_not_uniq,
                  error_password_too_short,error_password_bad_chars,error_password_not_equal,
                  error_confirm_not_checked],
 %% Populate CSS style model to display:inline; for DIV's corresponding to error msgs
@@ -102,7 +102,7 @@ validate_and_respond(Lang,Member,Req) ->
         {username,
          [{fun is_username_bad_chars/2,error_username_bad_chars},
           {fun is_username_too_short/2,error_username_too_short},
-          {fun is_username_not_unique/2,error_username_not_unique}],
+          {fun is_username_not_unique/2,error_username_not_uniq}],
          [v_username] },
         {password,
          [{fun is_password_bad_chars/2,error_password_bad_chars},
@@ -117,8 +117,10 @@ validate_and_respond(Lang,Member,Req) ->
             lager:debug("Validation SUCCESS with Fields:~tp",[ValidFields]),
             #{v_username:=Username,v_password1:=Password} = ValidFields,
                 case ldapregister_members:set_userpass(Member#ldap_member.ticket_id,Username,Password) of
-                    not_unique -> generate_form(Lang,Member,ValidFields,[error_username_not_unique]);
-                    ok ->  {303,[{<<"location">>,uni(ldapregister_template:generate_user_registration_url(Lang,Member))}],uni("")}
+                    not_unique -> generate_form(Lang,Member,ValidFields,[error_username_not_uniq]);
+                    ok ->
+                     ldapregister_members:sync_with_ldap(),
+                     {303,[{<<"location">>,uni(ldapregister_template:generate_user_registration_url(Lang,Member))}],uni("")}
                 end;
         {fail,ValidFields,Errors} ->
             lager:debug("Validation FAILED with Fields:~tp, Errors:~tp",[ValidFields,Errors]),
@@ -159,7 +161,8 @@ is_username_too_short(_G,#{v_username:=Username}) when length(Username) < 2 -> t
 is_username_too_short(_G,_) -> false.
 
 is_username_not_unique(_G,#{v_username:=Username}) ->
-    ldapregister_members:user_exists(Username).
+    ldapregister_members:user_exists(Username) 
+    or ldapregister_ldap:user_exists(Username).
 
 is_password_bad_chars(_G,#{v_password1:=Pass}) ->
     not is_valid_password_chars(Pass).
