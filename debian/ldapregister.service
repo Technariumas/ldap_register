@@ -3,7 +3,7 @@ Description=Technarium LDAP registry
 After=network.target auditd.service
 
 [Service]
-ExecStart=/opt/ldapregister/bin/ldapregister foreground
+ExecStart=/opt/ldapregister/bin/ldapregister start
 Restart=on-failure
 Type=simple
 User=ldapregister
