@@ -11,3 +11,4 @@ Group=ldapregister
 
 [Install]
 Alias=ldapregister.service
+WantedBy=multi-user.target
