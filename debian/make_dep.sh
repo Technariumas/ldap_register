@@ -17,7 +17,7 @@ fpm -s dir -t deb \
   --config-files /opt/ldapregister/ldapregister.config \
   --after-install debian/post_install.sh \
   -a all \
-  -v 0.0.1 \
+  -v 0.0.3 \
   -m "Ricardas Pocius <cirka@cirka.lt>" \
   --description "Website for registration to Technarium LDAP" \
   -C ./deb/root opt etc
