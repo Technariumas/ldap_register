@@ -8,7 +8,12 @@ push_member(#ldap_member{uid=UID}=Member) ->
     Conn = connect(),
     Result  = case uid_exists(Conn,UID) of
         false -> insert_member(Conn,Member);
-        {true,DN} -> update_record(Conn,DN,Member)
+        {true,DN} ->
+            ok = case is_group_member(Conn,DN) of
+                true -> ok;
+                false -> add_to_group(Conn,DN)
+            end,
+            update_record(Conn,DN,Member)
     end,
     disconnect(Conn),
     Result.
@@ -78,7 +83,7 @@ insert_member(Conn,#ldap_member{uid=U,password=P,name=Name,surname=Surname,email
     {"uid",[U]},
     {"userpassword",[P]}
     ],
-    Mod = [eldap:mod_add("uniquemember",[DN])],
+    Mod = [eldap:mod_add("uniquemember",[to_ldap(DN)])],
     case eldap:add(Conn,to_ldap(DN),Rec) of
         ok -> eldap:modify(Conn,GroupDN,Mod);
         Else -> Else
@@ -87,6 +92,23 @@ insert_member(Conn,#ldap_member{uid=U,password=P,name=Name,surname=Surname,email
 update_record(Conn,DN,#ldap_member{email=Email,password=Password}) ->
     Mod = [eldap:mod_replace("mail",[Email]),eldap:mod_replace("userpassword",[Password])],
     eldap:modify(Conn,to_ldap(DN),Mod).
+
+is_group_member(Conn,DN) ->
+    {ok,GroupDN} = application:get_env(ldapregister,ldap_group_dn),
+    Filter = eldap:equalityMatch("uniquemember",to_ldap(DN)),
+    case eldap:search(Conn, [{base,GroupDN},{filter,Filter},{attributes,["dn"]}]) of
+        {ok,{eldap_search_result,[],[]}} -> false;
+        {ok,{eldap_search_result,[{eldap_entry,GroupDN,_}|_Rest],[]}} -> true;
+        Else -> Else
+    end.
+
+add_to_group(Conn,DN) ->
+    {ok,GroupDN} = application:get_env(ldapregister,ldap_group_dn),
+    Mod = [eldap:mod_add("uniquemember",[to_ldap(DN)])],
+    case eldap:modify(Conn,GroupDN,Mod) of
+        {ok,_Result} -> ok;
+        Else -> Else
+    end.
 
 to_ldap(String) ->
     binary_to_list(unicode:characters_to_binary(String)).
