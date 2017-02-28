@@ -48,6 +48,7 @@ start_phase(app_start,_StartType,[]) ->
          {'_',
           [ %path list
            {"/register/:lang/:ticket_id", ldapregister_webform_register, []},
+           {"/status",ldapregister_statuspage,[]},
            {"/static/[...]", cowboy_static, {dir, code:priv_dir(ldapregister)++"/static"}}
           ]}
         ]),
